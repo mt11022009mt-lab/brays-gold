@@ -4,4 +4,6 @@ This repository hosts the Brays avatar and a customized Gold activation card scr
 
 The Gold feature script was adapted from `forceGold4.2.js` in [phamlong3539-stack/LOCKETGOLD](https://github.com/phamlong3539-stack/LOCKETGOLD). The original script's authorship is unchanged. The custom card displays “BRAYS 💛” and uses `brays-avatar.png`.
 
-The local `brays.conf` configuration is intentionally not published here because it contains an embedded certificate. To use this version, import the separately supplied local configuration into Shadowrocket.
+The public [`brays.conf`](brays.conf) keeps the original rules and script references, with the Brays Gold card script substituted. It does not include the original configuration's embedded certificate or password. After importing it into Shadowrocket, generate, install, and trust a certificate for this configuration in Shadowrocket's HTTPS Decryption settings.
+
+The separate local `brays.conf` supplied in chat retains the original embedded certificate for users who already installed and trusted it. Do not publish that local file.
