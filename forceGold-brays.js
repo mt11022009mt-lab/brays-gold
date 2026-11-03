@@ -11,6 +11,7 @@ function __braysDone(result) {
             feature.body = "BRAYS 💛";
             feature.imageURL = "https://raw.githubusercontent.com/mt11022009mt-lab/brays-gold/main/brays-avatar.png";
           }
+          popup.campaign = "brays_gold_welcome_v1";
           entries.feature_discovery_popup_config = JSON.stringify(popup);
           result.body = JSON.stringify(payload);
         }
