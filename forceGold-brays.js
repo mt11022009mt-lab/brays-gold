@@ -1,9 +1,99 @@
-// Custom Gold activation card for Brays.
+// Custom Gold activation card and current overlay preservation for Brays.
+var __braysOriginalEntries = (function () {
+  try {
+    var response = JSON.parse($response.body);
+    return response && response.entries ? response.entries : {};
+  } catch (error) {
+    return {};
+  }
+})();
+
+function __braysMergeObject(originalValue, currentValue) {
+  try {
+    var original = JSON.parse(originalValue);
+    var current = JSON.parse(currentValue);
+    if (!original || !current || Array.isArray(original) || Array.isArray(current)) return currentValue;
+    var merged = {};
+    for (var key in original) merged[key] = original[key];
+    for (var key in current) merged[key] = current[key];
+    return JSON.stringify(merged);
+  } catch (error) {
+    return currentValue;
+  }
+}
+
+function __braysMergeArray(originalValue, currentValue) {
+  try {
+    var original = JSON.parse(originalValue);
+    var current = JSON.parse(currentValue);
+    if (!Array.isArray(original) || !Array.isArray(current)) return currentValue;
+    for (var i = 0; i < current.length; i++) {
+      if (original.indexOf(current[i]) < 0) original.push(current[i]);
+    }
+    return JSON.stringify(original);
+  } catch (error) {
+    return currentValue;
+  }
+}
+
+function __braysMergeOverlayItems(originalValue, currentValue) {
+  try {
+    var original = JSON.parse(originalValue);
+    var current = JSON.parse(currentValue);
+    if (!Array.isArray(original) || !Array.isArray(current)) return currentValue;
+    var seen = Object.create(null);
+    for (var a = 0; a < original.length; a++) {
+      if (!original[a] || !Array.isArray(original[a].items)) continue;
+      for (var b = 0; b < original[a].items.length; b++) {
+        var existing = original[a].items[b];
+        if (existing && typeof existing.overlay_id === "string") seen[existing.overlay_id] = true;
+      }
+    }
+    for (var i = 0; i < current.length; i++) {
+      var incoming = current[i];
+      if (!incoming || typeof incoming.section !== "string" || !Array.isArray(incoming.items)) continue;
+      var target = null;
+      for (var j = 0; j < original.length; j++) {
+        if (original[j] && original[j].section === incoming.section && Array.isArray(original[j].items)) {
+          target = original[j];
+          break;
+        }
+      }
+      if (!target) {
+        target = { section: incoming.section, items: [] };
+        original.push(target);
+      }
+      for (var k = 0; k < incoming.items.length; k++) {
+        var candidate = incoming.items[k];
+        if (!candidate || typeof candidate.overlay_id !== "string" || seen[candidate.overlay_id]) continue;
+        target.items.push(candidate);
+        seen[candidate.overlay_id] = true;
+      }
+    }
+    return JSON.stringify(original);
+  } catch (error) {
+    return currentValue;
+  }
+}
+
 function __braysDone(result) {
   try {
     if (result && typeof result.body === "string") {
       const payload = JSON.parse(result.body);
       const entries = payload && payload.entries;
+      if (entries) {
+        for (var key of ["camera", "camera_roll", "overlays_v2_config"]) {
+          if (typeof __braysOriginalEntries[key] === "string" && typeof entries[key] === "string") {
+            entries[key] = __braysMergeObject(__braysOriginalEntries[key], entries[key]);
+          }
+        }
+        if (typeof __braysOriginalEntries.overlay_dynamic_captions === "string" && typeof entries.overlay_dynamic_captions === "string") {
+          entries.overlay_dynamic_captions = __braysMergeArray(__braysOriginalEntries.overlay_dynamic_captions, entries.overlay_dynamic_captions);
+        }
+        if (typeof __braysOriginalEntries.overlay_items === "string" && typeof entries.overlay_items === "string") {
+          entries.overlay_items = __braysMergeOverlayItems(__braysOriginalEntries.overlay_items, entries.overlay_items);
+        }
+      }
       if (entries && typeof entries.feature_discovery_popup_config === "string") {
         const popup = JSON.parse(entries.feature_discovery_popup_config);
         if (Array.isArray(popup.feature_set)) {
@@ -13,9 +103,9 @@ function __braysDone(result) {
           }
           popup.campaign = "brays_gold_welcome_v1";
           entries.feature_discovery_popup_config = JSON.stringify(popup);
-          result.body = JSON.stringify(payload);
         }
       }
+      result.body = JSON.stringify(payload);
     }
   } catch (error) {
     // Keep the original response if its format changes.
