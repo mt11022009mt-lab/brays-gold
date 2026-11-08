@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadDescription</key>
+			<string>Bản thử nghiệm: chỉ chuyển DNS của api.revenuecat.com qua máy chủ trong cấu hình gốc. Firebase Remote Config sử dụng DNS thông thường để tải các tính năng ứng dụng. Máy chủ DNS cũ vẫn có thể ghi nhật ký truy vấn RevenueCat.</string>
+			<key>PayloadDisplayName</key>
+			<string>Locket Gold RevenueCat DNS</string>
+			<key>PayloadIdentifier</key>
+			<string>com.brays.locketgold.dns-revenuecat-only.resolver</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>320F0EAA-01CC-4C39-8B92-B15BE3635814</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerURL</key>
+				<string>https://my.ublockdns.com/z451ak95</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>api.revenuecat.com</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Bản thử nghiệm: chỉ chuyển DNS của api.revenuecat.com qua máy chủ trong cấu hình gốc. Firebase Remote Config sử dụng DNS thông thường để tải các tính năng ứng dụng. Máy chủ DNS cũ vẫn có thể ghi nhật ký truy vấn RevenueCat.</string>
+	<key>PayloadDisplayName</key>
+	<string>Locket Gold DNS - RevenueCat only</string>
+	<key>PayloadIdentifier</key>
+	<string>com.brays.locketgold.dns-revenuecat-only</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>B8D16933-20A8-4A14-9DE6-93E9EA9FDC57</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
